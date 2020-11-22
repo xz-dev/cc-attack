@@ -1,4 +1,6 @@
 # config_link
+/socks4.txt
+/socks5.txt
 /config.ini
 /asset/
 # IDEA
