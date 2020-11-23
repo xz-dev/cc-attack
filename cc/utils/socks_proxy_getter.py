@@ -1,4 +1,5 @@
 import re
+from time import sleep
 from requests import get
 from multiprocessing import Manager
 from random import choice
@@ -12,6 +13,16 @@ socks_proxy_pages = [
 
 __manager = Manager()
 __socks_proxy_urls = __manager.list()
+
+
+def auto_renew_socks(socks_version: int, stop):
+    s = 0
+    while not stop:
+        if s >= 3600:
+            download_socks(socks_version)
+            s = 0
+        sleep(20)
+        s += 20
 
 
 def download_socks(socks_version: int) -> list:
@@ -46,16 +57,15 @@ def download_socks(socks_version: int) -> list:
             print(f'Fail to get proxy: {url}, e: {e}')
     socks_proxy_urls = set([
         url for url in
-        [reset_socks_ip(string, socks_version) for string in socks_proxy_urls]
-        if url
-    ])
+        [reset_socks_ip(string, socks_version)
+         for string in socks_proxy_urls] if url
+    ] + list(__socks_proxy_urls))
+    __socks_proxy_urls[:] = socks_proxy_urls
     if socks_proxy_urls:
         with (open(f'socks{socks_version}.txt', 'w+')) as f:
             for url in socks_proxy_urls:
                 f.writelines(url + "\n")
     print(f'> Have already downloaded socks{socks_version} proxy')
-    [__socks_proxy_urls.append(url) for url in socks_proxy_urls]
-    print(__socks_proxy_urls)
     return __socks_proxy_urls
 
 

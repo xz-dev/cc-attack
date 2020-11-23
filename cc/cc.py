@@ -3,7 +3,7 @@ from threading import Thread
 from multiprocessing import Manager
 
 from .utils.cc_fun import send_request, slow, check
-from .utils.socks_proxy_getter import download_socks
+from .utils.socks_proxy_getter import download_socks, auto_renew_socks
 
 parser = argparse.ArgumentParser(prog="CC Attack")
 parser.add_argument('mode', type=str, nargs=1)
@@ -25,6 +25,9 @@ def main():
         download_socks(socks_version)
     th_list = []
     th = Thread(target=check, args=(url, stop))
+    th_list.append(th)
+    th.start()
+    th = Thread(target=auto_renew_socks, args=(socks_version, stop))
     th_list.append(th)
     th.start()
     for _ in range(thread_num):
