@@ -103,6 +103,6 @@ def _get_socket(target_url: ParseResult, proxy: str or None = None):
     if target_url.scheme == "https" or port == 443:
         ctx = ssl.SSLContext()
         s = ctx.wrap_socket(s, server_hostname=host)
-    s.settimeout(1)
+    s.settimeout(15)
     s.connect((host, port))
     return s
