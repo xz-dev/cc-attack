@@ -49,7 +49,7 @@ def download_socks(socks_version: int) -> list:
     if socks_proxy_urls:
         with (open(f'socks{socks_version}.txt', 'w+')) as f:
             for url in socks_proxy_urls:
-                f.writelines(url)
+                f.writelines(url + "\n")
     print(f'> Have already downloaded socks{socks_version} proxy')
     return socks_proxy_urls
 
