@@ -38,6 +38,7 @@ def send_request(mode: str,
         except Exception as e:
             print(f"Socket stoped, e: {e}")
             pass
+    print("Socket stoped")
 
 
 def slow(target: str, stop: bool, proxy: str or None = None):
@@ -59,6 +60,7 @@ def slow(target: str, stop: bool, proxy: str or None = None):
         except Exception as e:
             print(f"Socket stoped, e: {e}")
             pass
+    print("Socket stoped")
 
 
 def check(target: str, stop):
@@ -69,6 +71,7 @@ def check(target: str, stop):
             with (get(target)) as r:
                 if r.status_code >= 500:
                     stop.value = True
+                print(f"Check Status Code: {r.status_code}")
         except Exception as e:
             print(f"Check Failed, e: {e}")
             pass
